@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createOrder, getOrdersByCustomer } from '../controllers/orderController.js';
-import { authenticateOptional } from '../middleware/auth.js';
+import { authenticateOptional, authenticate } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -8,6 +8,6 @@ const router = Router();
 router.post('/', authenticateOptional, createOrder);
 
 // Get all orders for one customer (customerId param)
-router.get('/:customerId', getOrdersByCustomer);
+router.get('/:customerId', authenticate, getOrdersByCustomer);
 
 export default router;

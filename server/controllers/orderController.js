@@ -26,6 +26,12 @@ export async function createOrder(req, res) {
 export async function getOrdersByCustomer(req, res) {
   try {
     const { customerId } = req.params;
+    // Ensure only the user themselves or admin can view these orders
+    const isSelf = req.user && String(req.user._id) === String(customerId);
+    const isAdmin = req.user && req.user.role === 'admin';
+    if (!isSelf && !isAdmin) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
     const orders = await Order.find({ customerId }).sort({ createdAt: -1 });
     return res.json(orders);
   } catch (err) {
